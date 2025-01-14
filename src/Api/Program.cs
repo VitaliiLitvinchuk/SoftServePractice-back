@@ -1,6 +1,46 @@
+using Api.Dependencies;
+using Api.Modules.Database;
+using Api.Modules.RouteFiltering;
+using Api.Modules.Validator;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new RouteTokenTransformerConvention(new KebabCaseParameterTransformer()));
+    options.Filters.Add<ValidationExceptionFilter>();
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        policy => policy.WithOrigins("http://localhost:5173", "https://localhost:5173", "http://localhost:3000", "https://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+
+builder.Services.AddDependencies(builder.Configuration);
+builder.Services.AddValidators();
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors("AllowLocalhost");
+
+await app.InitializeDb();
+
+app.MapControllers();
+
+app.UseHttpsRedirection();
 
 await app.RunAsync();
+
+public partial class Program;
