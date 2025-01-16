@@ -2,15 +2,15 @@ using Domain.MoviesActors;
 
 namespace Domain.Actors;
 
-public class Actor(ActorId actorId, string name, string surname, string middlename, string imageUrl)
+public class Actor(ActorId id, string name, string surname, string middlename, string imageUrl)
 {
-    public ActorId Id { get; } = actorId;
+    public ActorId Id { get; } = id;
     public string Name { get; private set; } = name;
     public string Surname { get; private set; } = surname;
     public string Middlename { get; private set; } = middlename;
     public string ImageUrl { get; private set; } = imageUrl;
 
-    public ICollection<MovieActor> MovieActors { get; } = [];
+    public ICollection<MovieActor> Movies { get; } = [];
 
     public void UpdateDatails(string name, string surname, string middlename, string imageUrl)
     {
@@ -20,6 +20,6 @@ public class Actor(ActorId actorId, string name, string surname, string middlena
         ImageUrl = imageUrl;
     }
 
-    public static Actor New(ActorId actorId, string name, string surname, string middlename, string imageUrl)
-        => new(actorId, name, surname, middlename, imageUrl);
+    public static Actor New(ActorId id, string name, string surname, string middlename, string imageUrl)
+        => new(id, name, surname, middlename, imageUrl);
 }

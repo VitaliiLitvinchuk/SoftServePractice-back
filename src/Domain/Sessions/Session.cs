@@ -5,9 +5,9 @@ using Domain.Tickets;
 
 namespace Domain.Sessions;
 
-public class Session(SessionId sessionId, DateTime startAt, DateTime endAt, StatusId statusId, MovieId movieId, HallId hallId)
+public class Session(SessionId id, DateTime startAt, DateTime endAt, StatusId statusId, MovieId movieId, HallId hallId)
 {
-    public SessionId SessionId { get; } = sessionId;
+    public SessionId Id { get; } = id;
 
     public DateTime StartAt { get; private set; } = startAt;
     public DateTime EndAt { get; private set; } = endAt;
@@ -46,6 +46,6 @@ public class Session(SessionId sessionId, DateTime startAt, DateTime endAt, Stat
         Hall = null;
     }
 
-    public static Session New(SessionId sessionId, DateTime startAt, DateTime endAt, StatusId statusId, MovieId movieId, HallId hallId)
-        => new(sessionId, startAt, endAt, statusId, movieId, hallId);
+    public static Session New(SessionId id, DateTime startAt, DateTime endAt, StatusId statusId, MovieId movieId, HallId hallId)
+        => new(id, startAt, endAt, statusId, movieId, hallId);
 }

@@ -7,9 +7,9 @@ using Domain.Sessions;
 
 namespace Domain.Movies;
 
-public class Movie(MovieId movieId, string name, long duration, string trailerUrl)
+public class Movie(MovieId id, string name, long duration, string trailerUrl)
 {
-    public MovieId Id { get; } = movieId;
+    public MovieId Id { get; } = id;
     public string Name { get; private set; } = name;
     public long Duration { get; private set; } = duration;
     public string TrailerUrl { get; private set; } = trailerUrl;
@@ -28,6 +28,6 @@ public class Movie(MovieId movieId, string name, long duration, string trailerUr
         TrailerUrl = trailerUrl;
     }
 
-    public static Movie New(MovieId movieId, string name, long duration, string trailerUrl)
-        => new(movieId, name, duration, trailerUrl);
+    public static Movie New(MovieId id, string name, long duration, string trailerUrl)
+        => new(id, name, duration, trailerUrl);
 }

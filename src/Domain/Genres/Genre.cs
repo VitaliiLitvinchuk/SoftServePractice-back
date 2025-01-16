@@ -3,19 +3,19 @@ using Domain.MoviesGenres;
 
 namespace Domain.Genres;
 
-public class Genre(GenreId genreId, string name)
+public class Genre(GenreId id, string name)
 {
-    public GenreId Id { get; } = genreId;
+    public GenreId Id { get; } = id;
     public string Name { get; private set; } = name;
 
-    public ICollection<MovieGenre> MovieGenres = [];
-    public ICollection<GenreTag> GenreTags = [];
+    public ICollection<MovieGenre> Movies = [];
+    public ICollection<GenreTag> Tags = [];
 
     public void UpdateDatails(string name)
     {
         Name = name;
     }
 
-    public static Genre New(GenreId genreId, string name)
-        => new(genreId, name);
+    public static Genre New(GenreId id, string name)
+        => new(id, name);
 }

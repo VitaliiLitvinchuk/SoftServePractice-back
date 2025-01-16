@@ -3,7 +3,7 @@ services:
     image: postgres:latest
     container_name: SoftServeDB
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: softserve
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: softserve
     ports:

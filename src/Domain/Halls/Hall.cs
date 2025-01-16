@@ -3,9 +3,9 @@ using Domain.Sessions;
 
 namespace Domain.Halls;
 
-public class Hall(HallId hallId, string name, short capacity)
+public class Hall(HallId id, string name, short capacity)
 {
-    public HallId Id { get; } = hallId;
+    public HallId Id { get; } = id;
     public string Name { get; private set; } = name;
     public short Capacity { get; private set; } = capacity;
 
@@ -18,6 +18,6 @@ public class Hall(HallId hallId, string name, short capacity)
         Capacity = capacity;
     }
 
-    public static Hall New(HallId hallId, string name, short capacity)
-        => new(hallId, name, capacity);
+    public static Hall New(HallId id, string name, short capacity)
+        => new(id, name, capacity);
 }

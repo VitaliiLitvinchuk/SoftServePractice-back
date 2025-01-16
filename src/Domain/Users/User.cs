@@ -4,9 +4,9 @@ using Domain.Roles;
 
 namespace Domain.Users;
 
-public class User(UserId userId, string email, string passwordHash, RoleId roleId)
+public class User(UserId id, string email, string passwordHash, RoleId roleId)
 {
-    public UserId Id { get; } = userId;
+    public UserId Id { get; } = id;
     public string Email { get; private set; } = email;
     public string PasswordHash { get; private set; } = passwordHash;
 
@@ -22,6 +22,6 @@ public class User(UserId userId, string email, string passwordHash, RoleId roleI
         Role = null;
     }
 
-    public static User New(UserId userId, string email, string passwordHash, RoleId roleId)
-        => new(userId, email, passwordHash, roleId);
+    public static User New(UserId id, string email, string passwordHash, RoleId roleId)
+        => new(id, email, passwordHash, roleId);
 }
