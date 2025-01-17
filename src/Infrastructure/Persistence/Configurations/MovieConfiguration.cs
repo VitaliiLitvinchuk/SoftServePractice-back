@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Domain.Movies;
+using Infrastructure.Constraints;
 
 namespace Infrastructure.Persistence.Configurations;
 
@@ -14,6 +15,11 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.Property(x => x.Name).IsRequired().HasColumnType("varchar(255)");
         builder.Property(x => x.Duration).IsRequired().HasColumnType("bigint");
         builder.Property(x => x.TrailerUrl).IsRequired().HasColumnType("varchar(510)");
+        builder.Property(x => x.ImageUrl).IsRequired().HasColumnType("varchar(510)");
+        builder.Property(x => x.Description).IsRequired().HasColumnType("text");
+        builder.Property(x => x.ReleaseDate)
+            .IsRequired()
+            .HasConversion(new DateTimeUtcConverter());
 
         builder.HasMany(x => x.Genres)
             .WithOne(x => x.Movie)

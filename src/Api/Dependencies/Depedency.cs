@@ -7,7 +7,7 @@ public static class Depedency
 {
     public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddInfrasctructure(configuration);
+        services.AddInfrastructure(configuration);
 
         services.AddApplication();
 
