@@ -3,6 +3,8 @@ using Api.Modules.Database;
 using Api.Modules.RouteFiltering;
 using Api.Modules.Validator;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Application;
+using Api.Modules.SwaggerAuth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddDependencies(builder.Configuration);
 builder.Services.AddValidators();
 
+builder.Services.UseSwaggerGen();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -32,6 +36,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAppStaticFiles();
 
 app.UseCors("AllowLocalhost");
 

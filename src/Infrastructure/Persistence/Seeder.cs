@@ -1,3 +1,4 @@
+using Application.Common.Interfaces.Services;
 using Domain.Actors;
 using Domain.Genres;
 using Domain.GenresTags;
@@ -79,7 +80,9 @@ public static class Seeder
             await SeedSeats(context.Seats, context.Halls);
             await context.SaveChangesAsync();
 
-            await SeedUsers(context.Users, context.Roles);
+            var hashService = scope.ServiceProvider.GetRequiredService<IHashService>();
+
+            await SeedUsers(context.Users, context.Roles, hashService);
             await context.SaveChangesAsync();
         }
     }
@@ -269,10 +272,15 @@ public static class Seeder
 
             foreach (var hall in halls)
             {
-                var seatCount = random.Next(30, 100);
-                for (int i = 1; i <= seatCount; i++)
+                var rows = random.Next(5, 15);
+                var columns = random.Next(5, 15);
+
+                for (int i = 1; i <= rows; i++)
                 {
-                    seatList.Add(Seat.New(SeatId.New(), i, (short)random.Next(1, 10), hall.Id));
+                    for (int j = 1; j <= columns; j++)
+                    {
+                        seatList.Add(Seat.New(SeatId.New(), i, j, hall.Id));
+                    }
                 }
             }
 
@@ -297,7 +305,7 @@ public static class Seeder
         }
     }
 
-    public static async Task SeedUsers(DbSet<User> users, DbSet<Role> roles)
+    public static async Task SeedUsers(DbSet<User> users, DbSet<Role> roles, IHashService hashService)
     {
         if (!users.Any())
         {
@@ -305,8 +313,8 @@ public static class Seeder
             var userRole = roles.Single(x => x.Name == "User");
 
             IEnumerable<User> userList = [
-                User.New(UserId.New(), "admin", "password", adminRole.Id),
-                User.New(UserId.New(), "user", "password", userRole.Id)
+                User.New(UserId.New(), "admin@a.a", hashService.HashPassword("password"), adminRole.Id),
+                User.New(UserId.New(), "user@a.a", hashService.HashPassword("password"), userRole.Id)
             ];
 
             await users.AddRangeAsync(userList);

@@ -31,6 +31,8 @@
   <ItemGroup>
     <Folder Include="Dtos\" />
     <Folder Include="Modules\RouteFiltering\" />
+    <Folder Include="uploads\" />
+    <Folder Include="uploads\images\" />
   </ItemGroup>
 
 </Project>

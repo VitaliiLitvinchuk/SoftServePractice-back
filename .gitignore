@@ -67,3 +67,5 @@ Content/
 *.vcxproj.filters
 *.vspscc
 *.vssscc
+
+src/Api/uploads
