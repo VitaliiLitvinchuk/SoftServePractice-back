@@ -44,5 +44,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+
+#pragma warning disable CS8625
+        builder.HasDbFunction(() => PgFunctions.PgSimilarity(default, default))
+            .HasName("similarity")
+            .IsBuiltIn();
+
+        builder.HasDbFunction(() => PgFunctions.PgFuzzyMatch(default, default))
+            .HasName("levenshtein")
+            .IsBuiltIn();
     }
 }

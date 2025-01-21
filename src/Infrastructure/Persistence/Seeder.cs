@@ -1,3 +1,4 @@
+using Application;
 using Application.Common.Interfaces.Services;
 using Domain.Actors;
 using Domain.Genres;
@@ -92,8 +93,8 @@ public static class Seeder
         if (!roles.Any())
         {
             IEnumerable<Role> roleList = [
-                Role.New(RoleId.New(), "Admin"),
-                Role.New(RoleId.New(), "User")
+                Role.New(RoleId.New(), Defaults.AdminRole),
+                Role.New(RoleId.New(), Defaults.UserRole)
             ];
 
             await roles.AddRangeAsync(roleList);
@@ -309,8 +310,8 @@ public static class Seeder
     {
         if (!users.Any())
         {
-            var adminRole = roles.Single(x => x.Name == "Admin");
-            var userRole = roles.Single(x => x.Name == "User");
+            var adminRole = roles.Single(x => x.Name == Defaults.AdminRole);
+            var userRole = roles.Single(x => x.Name == Defaults.UserRole);
 
             IEnumerable<User> userList = [
                 User.New(UserId.New(), "admin@a.a", hashService.HashPassword("password"), adminRole.Id),

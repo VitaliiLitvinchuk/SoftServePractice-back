@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
-namespace Api.Modules.SwaggerAuth;
+namespace Api.Modules.Auth;
 
 public static class SwaggerAuth
 {

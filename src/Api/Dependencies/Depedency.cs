@@ -1,3 +1,4 @@
+using Api.Attributes;
 using Application;
 using Infrastructure;
 
@@ -10,6 +11,8 @@ public static class Depedency
         services.AddInfrastructure(configuration);
 
         services.AddApplication();
+
+        services.AddScoped<Authorized>();
 
         return services;
     }
