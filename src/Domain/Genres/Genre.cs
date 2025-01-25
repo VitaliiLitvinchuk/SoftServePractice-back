@@ -11,7 +11,7 @@ public class Genre(GenreId id, string name)
     public ICollection<MovieGenre> Movies = [];
     public ICollection<GenreTag> Tags = [];
 
-    public void UpdateDatails(string name)
+    public void UpdateDetails(string name)
     {
         Name = name;
     }

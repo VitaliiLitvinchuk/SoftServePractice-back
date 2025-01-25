@@ -27,7 +27,7 @@ public class CreateRoleCommandHandler(IBaseRepository<Role> repository, IBaseQue
         );
     }
 
-    public async Task<Result<Role, RoleException>> CreateEntity(Role entity, CancellationToken cancellation)
+    private async Task<Result<Role, RoleException>> CreateEntity(Role entity, CancellationToken cancellation)
     {
         try
         {

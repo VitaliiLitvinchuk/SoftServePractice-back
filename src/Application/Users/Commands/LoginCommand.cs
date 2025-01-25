@@ -19,13 +19,13 @@ public class LoginCommandHandler(IBaseQuery<User> query, IHashService hashServic
     public Task<Result<User, UserException>> Handle(LoginCommand request, CancellationToken cancellation)
     {
         return query.Get(cancellation, x => x.Email == request.Email, include: x => x.Include(x => x.Role)!)
-            .ContinueWith(task => task.Result.Match(
+            .ContinueWith(task => task.Result.Match<Result<User, UserException>>(
                 user =>
                 {
                     var password = hashService.HashPassword(request.Password);
 
                     if (user.PasswordHash != password)
-                        return (Result<User, UserException>)new UserInvalidDataException(user.Id);
+                        return new UserInvalidDataException(user.Id);
 
                     return user;
                 },

@@ -22,7 +22,7 @@ public class Session(SessionId id, DateTime startAt, DateTime endAt, StatusId st
 
     public ICollection<Ticket> Tickets { get; } = [];
 
-    public void UpdateDatails(DateTime startAt, DateTime endAt)
+    public void UpdateDetails(DateTime startAt, DateTime endAt)
     {
         StartAt = startAt;
         EndAt = endAt;

@@ -2,7 +2,6 @@ using Domain.MoviesActors;
 using Domain.MoviesGenres;
 using Domain.MoviesRatings;
 using Domain.MoviesTags;
-using Domain.PurchaseHistories;
 using Domain.Sessions;
 
 namespace Domain.Movies;
@@ -22,9 +21,8 @@ public class Movie(MovieId id, string name, long duration, string trailerUrl, st
     public ICollection<MovieActor> Actors { get; } = [];
     public ICollection<Session> Sessions { get; } = [];
     public ICollection<MovieRating> Ratings { get; } = [];
-    public ICollection<PurchaseHistory> PurchaseHistories { get; } = [];
 
-    public void UpdateDatails(string name, long duration, string trailerUrl, string imageUrl, string description, DateTime releaseDate)
+    public void UpdateDetails(string name, long duration, string trailerUrl, string imageUrl, string description, DateTime releaseDate)
     {
         Name = name;
         Duration = duration;

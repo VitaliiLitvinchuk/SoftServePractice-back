@@ -10,7 +10,9 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 {
     public void Configure(EntityTypeBuilder<Ticket> builder)
     {
-        builder.HasKey(x => new { x.SeatId, x.SessionId });
+        builder.HasKey(x => new { x.Id });
+        builder.Property(x => x.Id).HasConversion(x => x.Value, x => new TicketId(x));
+
         builder.Property(x => x.SeatId).HasConversion(x => x.Value, x => new SeatId(x));
         builder.Property(x => x.SessionId).HasConversion(x => x.Value, x => new SessionId(x));
 

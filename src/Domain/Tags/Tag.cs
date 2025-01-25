@@ -11,7 +11,7 @@ public class Tag(TagId id, string name)
     public ICollection<GenreTag> Genres { get; } = [];
     public ICollection<MovieTag> Movies { get; } = [];
 
-    public void UpdateDatails(string name)
+    public void UpdateDetails(string name)
     {
         Name = name;
     }

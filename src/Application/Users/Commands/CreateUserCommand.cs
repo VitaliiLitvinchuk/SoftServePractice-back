@@ -35,9 +35,9 @@ public class CreateUserCommandHandler(
                 var result = await roles.Get(cancellation, x => x.Name == Defaults.UserRole);
 
                 return await result.Match(
-                    async role =>
+                    async entity =>
                     {
-                        var user = User.New(id, request.Email, hashService.HashPassword(request.Password), role.Id);
+                        var user = User.New(id, request.Email, hashService.HashPassword(request.Password), entity.Id);
 
                         return await CreateEntity(user, cancellation);
                     },
@@ -47,7 +47,7 @@ public class CreateUserCommandHandler(
         );
     }
 
-    public async Task<Result<User, UserException>> CreateEntity(User entity, CancellationToken cancellation)
+    private async Task<Result<User, UserException>> CreateEntity(User entity, CancellationToken cancellation)
     {
         try
         {

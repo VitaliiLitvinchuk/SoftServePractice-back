@@ -50,11 +50,5 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
             .HasForeignKey(x => x.MovieId)
             .HasConstraintName("FK_Movie_Rating_MovieId")
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasMany(x => x.PurchaseHistories)
-            .WithOne(x => x.Movie)
-            .HasForeignKey(x => x.MovieId)
-            .HasConstraintName("FK_Movie_PurchaseHistory_MovieId")
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

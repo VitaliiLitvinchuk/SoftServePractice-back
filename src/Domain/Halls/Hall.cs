@@ -12,7 +12,7 @@ public class Hall(HallId id, string name, short capacity)
     public ICollection<Seat> Seats = [];
     public ICollection<Session> Sessions = [];
 
-    public void UpdateDatails(string name, short capacity)
+    public void UpdateDetails(string name, short capacity)
     {
         Name = name;
         Capacity = capacity;

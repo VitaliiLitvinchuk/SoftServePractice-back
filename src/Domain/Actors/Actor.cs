@@ -12,7 +12,7 @@ public class Actor(ActorId id, string name, string surname, string middlename, s
 
     public ICollection<MovieActor> Movies { get; } = [];
 
-    public void UpdateDatails(string name, string surname, string middlename, string imageUrl)
+    public void UpdateDetails(string name, string surname, string middlename, string imageUrl)
     {
         Name = name;
         Surname = surname;

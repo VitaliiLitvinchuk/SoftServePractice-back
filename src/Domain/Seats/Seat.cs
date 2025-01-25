@@ -14,7 +14,7 @@ public class Seat(SeatId id, int row, int number, HallId hallId)
 
     public ICollection<Ticket> Tickets { get; } = [];
 
-    public void UpdateDatails(int row, int number)
+    public void UpdateDetails(int row, int number)
     {
         Row = row;
         Number = number;

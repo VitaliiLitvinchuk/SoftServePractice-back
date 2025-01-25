@@ -1,5 +1,7 @@
+using Api.Attributes;
 using Api.Dtos.Actors;
 using Api.Modules.Errors;
+using Application;
 using Application.Actors.Commands;
 using Application.Actors.Exceptions;
 using Application.Common.Interfaces.Queries;
@@ -39,6 +41,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<ActorDto>> Create([FromForm] CreateActorDto dto, CancellationToken cancellation)
         {
             var fileUrl = await dto.Image.Save(subFolders, fileService, cancellation);
@@ -65,6 +68,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<ActorDto>> Update([FromForm] UpdateActorDto dto, CancellationToken cancellation)
         {
             var actor = await query.Get(filter: x => x.Id == new ActorId(dto.Id), cancellation: cancellation);
@@ -112,6 +116,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<ActorDto>> Delete([FromQuery] DeleteActorDto dto, CancellationToken cancellation)
         {
             var input = new DeleteActorCommand

@@ -9,7 +9,7 @@ public class Role(RoleId id, string name)
 
     public ICollection<User> Users { get; } = [];
 
-    public void UpdateDatails(string name)
+    public void UpdateDetails(string name)
     {
         Name = name;
     }

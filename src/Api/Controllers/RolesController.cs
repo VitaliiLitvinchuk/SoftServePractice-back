@@ -1,5 +1,7 @@
+using Api.Attributes;
 using Api.Dtos.Roles;
 using Api.Modules.Errors;
+using Application;
 using Application.Common.Interfaces.Queries;
 using Application.Roles.Commands;
 using Application.Roles.Exceptions;
@@ -37,6 +39,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<RoleDto>> Create([FromForm] CreateRoleDto dto, CancellationToken cancellation)
         {
             var input = new CreateRoleCommand
@@ -53,6 +56,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<RoleDto>> Update([FromForm] UpdateRoleDto dto, CancellationToken cancellation)
         {
             var input = new UpdateRoleCommand
@@ -70,6 +74,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult> Delete([FromQuery] DeleteRoleDto dto, CancellationToken cancellation)
         {
             var input = new DeleteRoleCommand

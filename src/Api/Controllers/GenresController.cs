@@ -1,5 +1,7 @@
+using Api.Attributes;
 using Api.Dtos.Genres;
 using Api.Modules.Errors;
+using Application;
 using Application.Common.Interfaces.Queries;
 using Application.Genres.Commands;
 using Application.Genres.Exceptions;
@@ -53,6 +55,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<GenreDto>> Create([FromForm] CreateGenreDto dto, CancellationToken cancellation)
         {
             var input = new CreateGenreCommand
@@ -69,6 +72,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<GenreDto>> Update([FromForm] UpdateGenreDto dto, CancellationToken cancellation)
         {
             var input = new UpdateGenreCommand
@@ -86,6 +90,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("[action]")]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult> Delete([FromQuery] DeleteGenreDto dto, CancellationToken cancellation)
         {
             var input = new DeleteGenreCommand

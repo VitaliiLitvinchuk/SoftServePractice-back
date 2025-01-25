@@ -24,13 +24,13 @@ public class UpdateUserCommandHandler(IBaseRepository<User> repository, IBaseQue
         var result = await query.Get(cancellation, x => x.Id == id, include: x => x.Include(x => x.Role)!);
 
         return await result.Match(
-            async user =>
+            async entity =>
             {
                 var roleId = new RoleId(request.RoleId);
                 var result = await roles.Get(cancellation, x => x.Id == roleId);
 
                 return await result.Match(
-                    async role => await UpdateEntity(user, role.Id, cancellation),
+                    async role => await UpdateEntity(entity, role.Id, cancellation),
                     () => Task.FromResult<Result<User, UserException>>(new RoleForUserNotFoundException(id, roleId))
                 );
             },

@@ -41,7 +41,7 @@ public class Authorized(IJwtService jwtService, IBaseQuery<User> users, string? 
             var result = await users.Get(default, x => x.Id == userId, include: x => x.Include(x => x.Role)!);
             var user = result.ValueOrDefault();
 
-            if (result == default)
+            if (user == default)
             {
                 context.Result = new UnauthorizedResult();
                 return;

@@ -22,18 +22,18 @@ public class DeleteActorCommandHandler(IBaseRepository<Actor> repository, IBaseQ
         var result = await query.Get(filter: x => x.Id == id, include: x => x.Include(x => x.Movies), cancellation: cancellation);
 
         return await result.Match(
-            async actor =>
+            async entity =>
             {
-                if (actor.Movies.Count != 0)
+                if (entity.Movies.Count != 0)
                     return new ActorHasReleationsException(id);
 
-                return await DeleteEntity(actor, cancellation);
+                return await DeleteEntity(entity, cancellation);
             },
             () => Task.FromResult<Result<Actor, ActorException>>(new ActorNotFoundException(id))
         );
     }
 
-    public async Task<Result<Actor, ActorException>> DeleteEntity(Actor entity, CancellationToken cancellation)
+    private async Task<Result<Actor, ActorException>> DeleteEntity(Actor entity, CancellationToken cancellation)
     {
         try
         {

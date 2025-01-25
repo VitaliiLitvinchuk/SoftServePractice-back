@@ -22,21 +22,21 @@ public class DeleteUserCommandHandler(IBaseRepository<User> repository, IBaseQue
         var result = await query.Get(cancellation, x => x.Id == id, include: x => x.Include(x => x.MovieRatings).Include(x => x.PurchaseHistories));
 
         return await result.Match(
-            async user =>
+            async entity =>
             {
-                if (user.MovieRatings.Count != 0)
+                if (entity.MovieRatings.Count != 0)
                     return new UserHasReleationsException(id);
 
-                if (user.PurchaseHistories.Count != 0)
+                if (entity.PurchaseHistories.Count != 0)
                     return new UserHasReleationsException(id);
 
-                return await DeleteEntity(user, cancellation);
+                return await DeleteEntity(entity, cancellation);
             },
             () => Task.FromResult<Result<User, UserException>>(new UserNotFoundException(id))
         );
     }
 
-    public async Task<Result<User, UserException>> DeleteEntity(User entity, CancellationToken cancellation)
+    private async Task<Result<User, UserException>> DeleteEntity(User entity, CancellationToken cancellation)
     {
         try
         {

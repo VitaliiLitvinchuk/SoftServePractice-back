@@ -243,15 +243,15 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("MovieId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("movie_id");
-
                     b.Property<DateTime>("PurchasedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("purchased_at")
                         .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ticket_id");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -260,8 +260,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_purchase_histories");
 
-                    b.HasIndex("MovieId")
-                        .HasDatabaseName("ix_purchase_histories_movie_id");
+                    b.HasIndex("TicketId")
+                        .HasDatabaseName("ix_purchase_histories_ticket_id");
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_purchase_histories_user_id");
@@ -390,6 +390,15 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Tickets.Ticket", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(8, 2)
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("price");
+
                     b.Property<Guid>("SeatId")
                         .HasColumnType("uuid")
                         .HasColumnName("seat_id");
@@ -398,13 +407,11 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("session_id");
 
-                    b.Property<decimal>("Price")
-                        .HasPrecision(8, 2)
-                        .HasColumnType("numeric(8,2)")
-                        .HasColumnName("price");
-
-                    b.HasKey("SeatId", "SessionId")
+                    b.HasKey("Id")
                         .HasName("pk_tickets");
+
+                    b.HasIndex("SeatId")
+                        .HasDatabaseName("ix_tickets_seat_id");
 
                     b.HasIndex("SessionId")
                         .HasDatabaseName("ix_tickets_session_id");
@@ -548,12 +555,12 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.PurchaseHistories.PurchaseHistory", b =>
                 {
-                    b.HasOne("Domain.Movies.Movie", "Movie")
+                    b.HasOne("Domain.Tickets.Ticket", "Ticket")
                         .WithMany("PurchaseHistories")
-                        .HasForeignKey("MovieId")
+                        .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_PurchaseHistory_Movie_MovieId");
+                        .HasConstraintName("FK_PurchaseHistory_Ticket_TicketId");
 
                     b.HasOne("Domain.Users.User", "User")
                         .WithMany("PurchaseHistories")
@@ -562,7 +569,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_PurchaseHistory_User_UserId");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Ticket");
 
                     b.Navigation("User");
                 });
@@ -667,8 +674,6 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Navigation("Genres");
 
-                    b.Navigation("PurchaseHistories");
-
                     b.Navigation("Ratings");
 
                     b.Navigation("Sessions");
@@ -701,6 +706,11 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Genres");
 
                     b.Navigation("Movies");
+                });
+
+            modelBuilder.Entity("Domain.Tickets.Ticket", b =>
+                {
+                    b.Navigation("PurchaseHistories");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>

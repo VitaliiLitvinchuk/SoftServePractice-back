@@ -24,7 +24,7 @@ public class UpdateActorCommandHandler(IBaseRepository<Actor> repository, IBaseQ
         var result = await query.Get(filter: x => x.Id == id, cancellation: cancellation);
 
         return await result.Match(
-            async actor => await UpdateEntity(actor, request.Name, request.Surname, request.Middlename, request.ImageUrl, cancellation),
+            async entity => await UpdateEntity(entity, request.Name, request.Surname, request.Middlename, request.ImageUrl, cancellation),
             () => Task.FromResult<Result<Actor, ActorException>>(new ActorNotFoundException(id))
         );
     }
@@ -33,7 +33,7 @@ public class UpdateActorCommandHandler(IBaseRepository<Actor> repository, IBaseQ
     {
         try
         {
-            entity.UpdateDatails(name, surname, middlename, imageUrl);
+            entity.UpdateDetails(name, surname, middlename, imageUrl);
 
             return await repository.Update(entity, cancellation);
         }

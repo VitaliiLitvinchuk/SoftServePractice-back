@@ -22,13 +22,13 @@ public class UpdateRoleCommandHandler(IBaseRepository<Role> repository, IBaseQue
         var result = await query.Get(cancellation, x => x.Id == id);
 
         return await result.Match(
-            async role =>
+            async entity =>
             {
                 var result = await query.Get(cancellation, x => x.Name == request.Name);
 
                 return await result.Match(
                   entity => Task.FromResult<Result<Role, RoleException>>(new RoleNameAlreadyExistsException(entity.Id, entity.Name)),
-                  async () => await UpdateEntity(role, request.Name, cancellation)
+                  async () => await UpdateEntity(entity, request.Name, cancellation)
                 );
             },
             () => Task.FromResult<Result<Role, RoleException>>(new RoleNotFoundException(id))
@@ -39,7 +39,7 @@ public class UpdateRoleCommandHandler(IBaseRepository<Role> repository, IBaseQue
     {
         try
         {
-            entity.UpdateDatails(name);
+            entity.UpdateDetails(name);
 
             return await repository.Update(entity, cancellation);
         }

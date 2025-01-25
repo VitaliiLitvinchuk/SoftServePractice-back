@@ -27,7 +27,7 @@ public class CreateGenreCommandHandler(IBaseRepository<Genre> repository, IBaseQ
         );
     }
 
-    public async Task<Result<Genre, GenreException>> CreateEntity(Genre entity, CancellationToken cancellation)
+    private async Task<Result<Genre, GenreException>> CreateEntity(Genre entity, CancellationToken cancellation)
     {
         try
         {

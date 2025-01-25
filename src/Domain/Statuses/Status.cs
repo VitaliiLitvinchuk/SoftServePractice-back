@@ -9,7 +9,7 @@ public class Status(StatusId id, string name)
 
     public ICollection<Session> Sessions { get; } = [];
 
-    public void UpdateDatails(string name)
+    public void UpdateDetails(string name)
     {
         Name = name;
     }

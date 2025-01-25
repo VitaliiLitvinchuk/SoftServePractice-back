@@ -22,13 +22,13 @@ public class UpdateGenreCommandHandler(IBaseRepository<Genre> repository, IBaseQ
         var result = await query.Get(cancellation, x => x.Id == id);
 
         return await result.Match(
-            async genre =>
+            async entity =>
             {
                 var result = await query.Get(cancellation, x => x.Name == request.Name);
 
                 return await result.Match(
                   entity => Task.FromResult<Result<Genre, GenreException>>(new GenreNameAlreadyExistsException(entity.Id, entity.Name)),
-                  async () => await UpdateEntity(genre, request.Name, cancellation)
+                  async () => await UpdateEntity(entity, request.Name, cancellation)
                 );
             },
             () => Task.FromResult<Result<Genre, GenreException>>(new GenreNotFoundException(id))
@@ -39,7 +39,7 @@ public class UpdateGenreCommandHandler(IBaseRepository<Genre> repository, IBaseQ
     {
         try
         {
-            entity.UpdateDatails(name);
+            entity.UpdateDetails(name);
 
             return await repository.Update(entity, cancellation);
         }

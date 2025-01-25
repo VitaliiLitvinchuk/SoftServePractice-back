@@ -22,18 +22,18 @@ public class DeleteRoleCommandHandler(IBaseRepository<Role> repository, IBaseQue
         var result = await query.Get(cancellation, x => x.Id == id, include: x => x.Include(x => x.Users));
 
         return await result.Match(
-            async role =>
+            async entity =>
             {
-                if (role.Users.Count != 0)
+                if (entity.Users.Count != 0)
                     return new RoleHasReleationsException(id);
 
-                return await DeleteEntity(role, cancellation);
+                return await DeleteEntity(entity, cancellation);
             },
             () => Task.FromResult<Result<Role, RoleException>>(new RoleNotFoundException(id))
         );
     }
 
-    public async Task<Result<Role, RoleException>> DeleteEntity(Role entity, CancellationToken cancellation)
+    private async Task<Result<Role, RoleException>> DeleteEntity(Role entity, CancellationToken cancellation)
     {
         try
         {

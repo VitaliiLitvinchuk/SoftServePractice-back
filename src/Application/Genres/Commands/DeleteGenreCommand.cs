@@ -22,21 +22,21 @@ public class DeleteGenreCommandHandler(IBaseRepository<Genre> repository, IBaseQ
         var result = await query.Get(cancellation, x => x.Id == id, include: x => x.Include(x => x.Movies).Include(x => x.Tags));
 
         return await result.Match(
-            async genre =>
+            async entity =>
             {
-                if (genre.Movies.Count != 0)
+                if (entity.Movies.Count != 0)
                     return new GenreHasReleationsException(id);
 
-                if (genre.Tags.Count != 0)
+                if (entity.Tags.Count != 0)
                     return new GenreHasReleationsException(id);
 
-                return await DeleteEntity(genre, cancellation);
+                return await DeleteEntity(entity, cancellation);
             },
             () => Task.FromResult<Result<Genre, GenreException>>(new GenreNotFoundException(id))
         );
     }
 
-    public async Task<Result<Genre, GenreException>> DeleteEntity(Genre entity, CancellationToken cancellation)
+    private async Task<Result<Genre, GenreException>> DeleteEntity(Genre entity, CancellationToken cancellation)
     {
         try
         {
