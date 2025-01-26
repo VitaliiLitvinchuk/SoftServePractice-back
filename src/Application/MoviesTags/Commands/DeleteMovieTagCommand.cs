@@ -27,7 +27,7 @@ public class DeleteMovieTagCommandHandler(IBaseRepository<MovieTag> repository, 
         var result = await query.Get(cancellation, x => x.MovieId == entity.MovieId && x.TagId == entity.TagId);
 
         return await result.Match(
-            entity => DeleteEntity(entity, cancellation),
+            async entity => await DeleteEntity(entity, cancellation),
             () => Task.FromResult<Result<MovieTag, MovieTagException>>(new MovieTagNotFoundException(entity.MovieId, entity.TagId))
         );
     }

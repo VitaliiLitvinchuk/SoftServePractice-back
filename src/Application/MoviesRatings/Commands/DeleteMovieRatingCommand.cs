@@ -26,7 +26,7 @@ public class DeleteMovieRatingCommandHandler(IBaseRepository<MovieRating> reposi
         var result = await query.Get(cancellation, x => x.MovieId == entity.MovieId && x.UserId == entity.UserId);
 
         return await result.Match(
-            entity => DeleteEntity(entity, cancellation),
+            async entity => await DeleteEntity(entity, cancellation),
             () => Task.FromResult<Result<MovieRating, MovieRatingException>>(new MovieRatingNotFoundException(entity.MovieId, entity.UserId))
         );
     }

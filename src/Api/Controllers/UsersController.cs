@@ -60,7 +60,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<ActionResult<string>> Create([FromBody] CreateUserDto dto, CancellationToken cancellation)
+        public async Task<ActionResult<string>> Create([FromForm] CreateUserDto dto, CancellationToken cancellation)
         {
             var command = new CreateUserCommand
             {

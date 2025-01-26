@@ -106,9 +106,9 @@ public static class Seeder
         if (!statuses.Any())
         {
             IEnumerable<Status> statusList = [
-                Status.New(StatusId.New(), "Pending"),
-                Status.New(StatusId.New(), "Active"),
-                Status.New(StatusId.New(), "Inactive")
+                Status.New(StatusId.New(), Defaults.StatusPending),
+                Status.New(StatusId.New(), Defaults.StatusActive),
+                Status.New(StatusId.New(), Defaults.StatusInactive)
             ];
 
             await statuses.AddRangeAsync(statusList);

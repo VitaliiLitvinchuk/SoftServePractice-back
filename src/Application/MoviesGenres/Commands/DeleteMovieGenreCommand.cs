@@ -27,7 +27,7 @@ public class DeleteMovieGenreCommandHandler(IBaseRepository<MovieGenre> reposito
         var result = await query.Get(cancellationToken, x => x.MovieId == entity.MovieId && x.GenreId == entity.GenreId);
 
         return await result.Match(
-            entity => DeleteEntity(entity, cancellationToken),
+            async entity => await DeleteEntity(entity, cancellationToken),
             () => Task.FromResult<Result<MovieGenre, MovieGenreException>>(new MovieGenreNotFoundException(entity.MovieId, entity.GenreId))
         );
     }

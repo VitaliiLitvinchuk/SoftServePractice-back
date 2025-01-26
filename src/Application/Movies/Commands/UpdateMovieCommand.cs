@@ -26,7 +26,7 @@ public class UpdateMovieCommandHandler(IBaseRepository<Movie> repository, IBaseQ
         var result = await query.Get(cancellation, x => x.Id == id);
 
         return await result.Match(
-            entity => UpdateEntity(entity, request.Name, request.Duration, request.TrailerUrl, request.ImageUrl, request.Description, request.ReleaseDate, cancellation),
+            async entity => await UpdateEntity(entity, request.Name, request.Duration, request.TrailerUrl, request.ImageUrl, request.Description, request.ReleaseDate, cancellation),
             () => Task.FromResult<Result<Movie, MovieException>>(new MovieNotFoundException(id))
         );
     }

@@ -17,17 +17,17 @@ public class DeleteGenreTagCommand : IRequest<Result<GenreTag, GenreTagException
 
 public class DeleteGenreTagCommandHandler(IBaseRepository<GenreTag> repository, IBaseQuery<GenreTag> query) : IRequestHandler<DeleteGenreTagCommand, Result<GenreTag, GenreTagException>>
 {
-    public async Task<Result<GenreTag, GenreTagException>> Handle(DeleteGenreTagCommand request, CancellationToken cancellationToken)
+    public async Task<Result<GenreTag, GenreTagException>> Handle(DeleteGenreTagCommand request, CancellationToken cancellation)
     {
         var genreId = new GenreId(request.GenreId);
         var tagId = new TagId(request.TagId);
 
         var entity = GenreTag.New(genreId, tagId);
 
-        var result = await query.Get(cancellationToken, x => x.GenreId == entity.GenreId && x.TagId == entity.TagId);
+        var result = await query.Get(cancellation, x => x.GenreId == entity.GenreId && x.TagId == entity.TagId);
 
         return await result.Match(
-            entity => DeleteEntity(entity, cancellationToken),
+            async entity => await DeleteEntity(entity, cancellation),
             () => Task.FromResult<Result<GenreTag, GenreTagException>>(new GenreTagNotFoundException(entity.GenreId, entity.TagId))
         );
     }
