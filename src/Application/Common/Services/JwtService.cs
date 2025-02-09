@@ -6,6 +6,7 @@ using Application.Common.Settings;
 using Domain.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using static Application.Common.Interfaces.Services.IJwtService;
 
 namespace Application.Common.Services;
 
@@ -16,9 +17,9 @@ public class JwtService(IConfiguration configuration) : IJwtService
     {
         var claims = new[]
         {
-            new Claim("userId", user.Id.ToString()),
-            new Claim("roleId", user.RoleId.ToString()),
-            new Claim("email", user.Email),
+            new Claim(GetClaim(ClaimsType.UserId), user.Id.ToString()),
+            new Claim(GetClaim(ClaimsType.RoleId), user.RoleId.ToString()),
+            new Claim(GetClaim(ClaimsType.Email), user.Email),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecretKey));

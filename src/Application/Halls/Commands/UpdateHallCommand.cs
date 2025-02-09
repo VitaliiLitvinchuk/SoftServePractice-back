@@ -25,12 +25,17 @@ public class UpdateHallCommandHandler(IBaseRepository<Hall> repository, IBaseQue
         return await result.Match(
             async entity =>
             {
-                var result = await query.Get(cancellation, x => x.Name == request.Name);
+                if (entity.Name != request.Name)
+                {
+                    var result = await query.GetMany(cancellation, x => x.Name == request.Name);
 
-                return await result.Match(
-                  entity => Task.FromResult<Result<Hall, HallException>>(new HallNameAlreadyExistsException(entity.Id, entity.Name)),
-                  async () => await UpdateEntity(entity, request.Name, request.Capacity, cancellation)
-                );
+                    if (result.Any())
+                    {
+                        return new HallNameAlreadyExistsException(id, request.Name);
+                    }
+                }
+
+                return await UpdateEntity(entity, request.Name, request.Capacity, cancellation);
             },
             () => Task.FromResult<Result<Hall, HallException>>(new HallNotFoundException(id))
         );

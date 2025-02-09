@@ -24,12 +24,17 @@ public class UpdateGenreCommandHandler(IBaseRepository<Genre> repository, IBaseQ
         return await result.Match(
             async entity =>
             {
-                var result = await query.Get(cancellation, x => x.Name == request.Name);
+                if (entity.Name != request.Name)
+                {
+                    var result = await query.GetMany(cancellation, x => x.Name == request.Name);
 
-                return await result.Match(
-                  entity => Task.FromResult<Result<Genre, GenreException>>(new GenreNameAlreadyExistsException(entity.Id, entity.Name)),
-                  async () => await UpdateEntity(entity, request.Name, cancellation)
-                );
+                    if (result.Any())
+                    {
+                        return new GenreNameAlreadyExistsException(id, request.Name);
+                    }
+                }
+
+                return await UpdateEntity(entity, request.Name, cancellation);
             },
             () => Task.FromResult<Result<Genre, GenreException>>(new GenreNotFoundException(id))
         );

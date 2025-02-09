@@ -22,7 +22,7 @@ namespace Api.Controllers
         [HttpGet("[action]")]
         public async Task<ActionResult<IEnumerable<ActorDto>>> GetAll(CancellationToken cancellation)
         {
-            var actors = await query.GetMany(cancellation, include: x => x.Include(x => x.Movies).ThenInclude(x => x.Movie)!);
+            var actors = await query.GetMany(cancellation);
 
             return Ok(actors.Select(ActorDto.FromDomainModel));
         }

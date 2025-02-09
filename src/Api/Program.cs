@@ -39,6 +39,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseAppStaticFiles();
 
+app.UseHangfire();
+
 app
     .UseAuthentication()
     .UseAuthorization();

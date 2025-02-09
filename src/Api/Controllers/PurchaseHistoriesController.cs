@@ -1,7 +1,6 @@
 using Api.Attributes;
 using Api.Dtos.PurchaseHistories;
 using Api.Modules.Errors;
-using Application;
 using Application.Common.Interfaces.Queries;
 using Application.PurchaseHistories.Commands;
 using Application.PurchaseHistories.Exceptions;
@@ -11,6 +10,7 @@ using Domain.Tickets;
 using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -21,7 +21,7 @@ namespace Api.Controllers
         [HttpGet("[action]")]
         public async Task<ActionResult<IEnumerable<PurchaseHistoryDto>>> GetAll(CancellationToken cancellation)
         {
-            var histories = await query.GetMany(cancellation);
+            var histories = await query.GetMany(cancellation, include: x => x.Include(x => x.User).Include(x => x.Ticket)!);
 
             return Ok(histories.Select(PurchaseHistoryDto.FromDomainModel));
         }
@@ -57,7 +57,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("[action]")]
-        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
+        [TypeFilter(typeof(Authorized))]
         public async Task<ActionResult<PurchaseHistoryDto>> Create([FromForm] CreatePurchaseHistoryDto dto, CancellationToken cancellation)
         {
             var input = new CreatePurchaseHistoryCommand
@@ -75,7 +75,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("[action]")]
-        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
+        [TypeFilter(typeof(Authorized))]
         public async Task<ActionResult<PurchaseHistoryDto>> Delete([FromQuery] Guid id, CancellationToken cancellation)
         {
             var input = new DeletePurchaseHistoryCommand

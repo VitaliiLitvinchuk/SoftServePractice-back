@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Optional.Unsafe;
+using static Application.Common.Interfaces.Services.IJwtService;
 
 namespace Api.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
 public class Authorized(IJwtService jwtService, IBaseQuery<User> users, string? allowedRole = null) : AuthorizeAttribute, IAsyncActionFilter
 {
+    public const string UserKey = "User";
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         try
@@ -36,7 +38,7 @@ public class Authorized(IJwtService jwtService, IBaseQuery<User> users, string? 
 
             var tokenValues = tokenHandler.ReadJwtToken(token);
 
-            var userId = new UserId(Guid.Parse(tokenValues.Claims.First(c => c.Type == "userId").Value));
+            var userId = new UserId(Guid.Parse(tokenValues.Claims.First(c => c.Type == GetClaim(ClaimsType.UserId)).Value));
 
             var result = await users.Get(default, x => x.Id == userId, include: x => x.Include(x => x.Role)!);
             var user = result.ValueOrDefault();
@@ -47,15 +49,18 @@ public class Authorized(IJwtService jwtService, IBaseQuery<User> users, string? 
                 return;
             }
 
-            var roleId = new RoleId(Guid.Parse(tokenValues.Claims.First(c => c.Type == "roleId").Value));
             if (allowedRole != null)
             {
+                var roleId = new RoleId(Guid.Parse(tokenValues.Claims.First(c => c.Type == GetClaim(ClaimsType.RoleId)).Value));
+
                 if (user.RoleId != roleId || user.Role!.Name != allowedRole)
                 {
                     context.Result = new ForbidResult();
                     return;
                 }
             }
+
+            context.HttpContext.Items.Add(UserKey, user);
             await next();
         }
         catch (Exception)

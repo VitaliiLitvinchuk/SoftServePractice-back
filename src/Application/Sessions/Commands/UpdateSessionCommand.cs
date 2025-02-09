@@ -51,7 +51,7 @@ public class UpdateSessionCommandHandler(IBaseRepository<Session> repository, IB
                                 DateTime endAt = request.EndAt.ToUniversalTime();
                                 DateTime startAt = request.StartAt.ToUniversalTime();
 
-                                var result = await query.Get(cancellation, x => x.HallId == hallId && x.MovieId == movieId
+                                var result = await query.Get(cancellation, x => x.HallId == hallId && x.MovieId == movieId && x.Id != id
                                    && (x.StartAt >= startAt && x.StartAt <= endAt
                                     || x.EndAt >= startAt && x.EndAt <= endAt));
 

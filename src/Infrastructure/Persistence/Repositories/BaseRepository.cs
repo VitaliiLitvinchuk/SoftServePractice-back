@@ -17,6 +17,16 @@ public class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T
 
         await context.SaveChangesAsync(cancellation);
 
+        var entry = context.Entry(entity);
+
+        foreach (var navigation in entry.Navigations)
+        {
+            if (!navigation.IsLoaded)
+            {
+                await navigation.LoadAsync(cancellation);
+            }
+        }
+
         return entity;
     }
 
@@ -99,6 +109,16 @@ public class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T
         _dbSet.Update(entity);
 
         await context.SaveChangesAsync(cancellation);
+
+        var entry = context.Entry(entity);
+
+        foreach (var navigation in entry.Navigations)
+        {
+            if (!navigation.IsLoaded)
+            {
+                await navigation.LoadAsync(cancellation);
+            }
+        }
 
         return entity;
     }

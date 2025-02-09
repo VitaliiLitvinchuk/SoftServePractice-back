@@ -10,7 +10,7 @@ public static class Depedency
     {
         services.AddInfrastructure(configuration);
 
-        services.AddApplication();
+        services.AddApplication(configuration);
 
         services.AddScoped<Authorized>();
 

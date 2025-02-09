@@ -19,8 +19,8 @@ public class CreateGenreTagCommandHandler(IBaseRepository<GenreTag> repository, 
 {
     public async Task<Result<GenreTag, GenreTagException>> Handle(CreateGenreTagCommand request, CancellationToken cancellation)
     {
-        var genreId = GenreId.New();
-        var tagId = TagId.New();
+        var genreId = new GenreId(request.GenreId);
+        var tagId = new TagId(request.TagId);
 
         var entity = GenreTag.New(genreId, tagId);
 

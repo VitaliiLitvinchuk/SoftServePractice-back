@@ -30,6 +30,8 @@ services:
       - back-db
     ports:
       - "4312:8080"
+    volumes:
+      - ./src/Api/uploads:/app/uploads
 
 volumes:
   api_db_data:

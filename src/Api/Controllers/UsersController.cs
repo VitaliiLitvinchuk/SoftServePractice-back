@@ -1,4 +1,3 @@
-using System;
 using Api.Attributes;
 using Api.Dtos.Users;
 using Api.Modules.Errors;
@@ -41,6 +40,21 @@ namespace Api.Controllers
                 () => new UserNotFoundException(userId).ToObjectResult()
             );
         }
+
+        // TODO: thinking
+        // [TypeFilter(typeof(Authorized))]
+        // [HttpGet("[action]")]
+        // public async Task<ActionResult<UserDto>> GetProfile(CancellationToken cancellation)
+        // {
+        //     User user = (HttpContext.Items[Authorized.UserKey] as User)!;
+
+        //     var userData = await query.Get(cancellation, x => x.Id == user.Id, include: x => x.Include(x => x.Role)!.Include(x => x.PurchaseHistories).ThenInclude(x => x.Ticket).ThenInclude(x => x!.Session).Include(x => x.MovieRatings));
+
+        //     return userData.Match(
+        //         user => Ok(UserDto.FromDomainModel(user)),
+        //         () => new UserNotFoundException(user.Id).ToObjectResult()
+        //     );
+        // }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<string>> Login([FromForm] LoginDto dto, CancellationToken cancellation)

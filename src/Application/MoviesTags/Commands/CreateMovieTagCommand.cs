@@ -15,7 +15,7 @@ public class CreateMovieTagCommand : IRequest<Result<MovieTag, MovieTagException
     public required Guid TagId { get; init; }
 }
 
-public class CreateMovieTagCommandHandler(IBaseRepository<MovieTag> repository, IBaseQuery<MovieTag> query) : IRequestHandler<CreateMovieTagCommand, Result<MovieTag, MovieTagException>>
+public class CreateMovieTagCommandHandler(IBaseRepository<MovieTag> repository, IBaseQuery<MovieTag> query, IBaseQuery<Movie> movieQuery, IBaseQuery<Tag> tagQuery) : IRequestHandler<CreateMovieTagCommand, Result<MovieTag, MovieTagException>>
 {
     public async Task<Result<MovieTag, MovieTagException>> Handle(CreateMovieTagCommand request, CancellationToken cancellation)
     {
@@ -28,7 +28,26 @@ public class CreateMovieTagCommandHandler(IBaseRepository<MovieTag> repository, 
 
         return await result.Match(
             entity => Task.FromResult<Result<MovieTag, MovieTagException>>(new MovieTagAlreadyExistsException(entity.MovieId, entity.TagId)),
-            async () => await CreateEntity(entity, cancellation)
+            async () =>
+            {
+                var movie = await movieQuery.Get(cancellation, x => x.Id == entity.MovieId);
+
+                return await movie.Match(
+                    async movie =>
+                    {
+                        var tag = await tagQuery.Get(cancellation, x => x.Id == entity.TagId);
+
+                        return await tag.Match(
+                            async tag =>
+                            {
+                                return await CreateEntity(entity, cancellation);
+                            },
+                            () => Task.FromResult<Result<MovieTag, MovieTagException>>(new TagForMovieTagNotFoundException(entity.TagId))
+                        );
+                    },
+                    () => Task.FromResult<Result<MovieTag, MovieTagException>>(new MovieForMovieTagNotFoundException(entity.MovieId))
+                );
+            }
         );
     }
 
