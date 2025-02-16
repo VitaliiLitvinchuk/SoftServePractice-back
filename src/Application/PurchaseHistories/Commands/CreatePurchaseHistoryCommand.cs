@@ -35,7 +35,7 @@ public class CreatePurchaseHistoryCommandHandler(IBaseRepository<PurchaseHistory
                 return await result.Match(
                     async user =>
                     {
-                        var result = await query.Get(cancellation, x => x.TicketId == ticketId && x.UserId == userId);
+                        var result = await query.Get(cancellation, x => x.TicketId == ticketId && x.UserId == userId || x.TicketId == ticketId);
 
                         return await result.Match(
                             entity => Task.FromResult<Result<PurchaseHistory, PurchaseHistoryException>>(new PurchaseHistoryAlreadyExistsException(id)),

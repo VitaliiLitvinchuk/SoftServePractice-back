@@ -39,13 +39,13 @@ namespace Api.Controllers
         [HttpGet("[action]")]
         public async Task<ActionResult<SeatDto>> GetById([FromQuery] Guid id, CancellationToken cancellation)
         {
-            var statusId = new SeatId(id);
+            var seatId = new SeatId(id);
 
-            var result = await query.Get(cancellation, x => x.Id == statusId, include: x => x.Include(x => x.Hall)!);
+            var result = await query.Get(cancellation, x => x.Id == seatId, include: x => x.Include(x => x.Hall)!);
 
             return result.Match(
                 seat => Ok(SeatDto.FromDomainModel(seat)),
-                () => new SeatNotFoundException(statusId).ToObjectResult()
+                () => new SeatNotFoundException(seatId).ToObjectResult()
             );
         }
 

@@ -28,6 +28,11 @@ public class UpdateSeatCommandHandler(IBaseRepository<Seat> repository, IBaseQue
         return await result.Match(
             async entity =>
             {
+                var seats = await query.GetMany(cancellation, x => x.HallId == hallId);
+
+                if (seats.Count() > entity.Capacity)
+                    return new HallIsFullException(id, hallId);
+
                 var result = await query.Get(cancellation, x => x.Id == id);
 
                 return await result.Match(

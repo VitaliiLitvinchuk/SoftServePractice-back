@@ -6,6 +6,7 @@ using Domain.Seats;
 using Domain.Sessions;
 using Domain.Tickets;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tickets.Commands;
 
@@ -26,15 +27,18 @@ public class CreateTicketCommandHandler(IBaseRepository<Ticket> repository, IBas
         var result = await querySession.Get(cancellation, x => x.Id == sessionId);
 
         return await result.Match(
-            async entity =>
+            async session =>
             {
                 var seatId = new SeatId(request.SeatId);
 
                 var result = await querySeat.Get(cancellation, x => x.Id == seatId);
 
                 return await result.Match(
-                    async entity =>
+                    async seat =>
                     {
+                        if (seat.HallId != session.HallId)
+                            return new SeatForTicketNotFoundException(id, seatId);
+
                         var result = await query.Get(cancellation, x => x.SessionId == sessionId && x.SeatId == seatId);
 
                         return await result.Match(

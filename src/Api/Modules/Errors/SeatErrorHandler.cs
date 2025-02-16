@@ -12,6 +12,7 @@ public static class SeatErrorHandler
             SeatUnknownException => StatusCodes.Status400BadRequest,
             SeatNotFoundException => StatusCodes.Status404NotFound,
             HallForSeatNotFoundException => StatusCodes.Status404NotFound,
+            HallIsFullException => StatusCodes.Status409Conflict,
             SeatAlreadyExistsException => StatusCodes.Status409Conflict,
             SeatHasReleationsException => StatusCodes.Status409Conflict,
             _ => throw new NotImplementedException("Unhandled exception")

@@ -3,6 +3,7 @@ using Application.Common.Interfaces.Repositories;
 using Application.Halls.Exceptions;
 using CSharpFunctionalExtensions;
 using Domain.Halls;
+using Domain.Seats;
 using MediatR;
 
 namespace Application.Halls.Commands;
@@ -14,7 +15,7 @@ public class UpdateHallCommand : IRequest<Result<Hall, HallException>>
     public required short Capacity { get; init; }
 }
 
-public class UpdateHallCommandHandler(IBaseRepository<Hall> repository, IBaseQuery<Hall> query) : IRequestHandler<UpdateHallCommand, Result<Hall, HallException>>
+public class UpdateHallCommandHandler(IBaseRepository<Hall> repository, IBaseQuery<Hall> query, IBaseQuery<Seat> seatQuery) : IRequestHandler<UpdateHallCommand, Result<Hall, HallException>>
 {
     public async Task<Result<Hall, HallException>> Handle(UpdateHallCommand request, CancellationToken cancellation)
     {
@@ -34,6 +35,14 @@ public class UpdateHallCommandHandler(IBaseRepository<Hall> repository, IBaseQue
                         return new HallNameAlreadyExistsException(id, request.Name);
                     }
                 }
+
+                var seats = await seatQuery.GetMany(cancellation, x => x.HallId == id);
+
+                if (seats.Count() >= request.Capacity)
+                {
+
+                }
+
 
                 return await UpdateEntity(entity, request.Name, request.Capacity, cancellation);
             },

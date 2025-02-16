@@ -1,11 +1,13 @@
 using Api.Attributes;
 using Api.Dtos.PurchaseHistories;
 using Api.Modules.Errors;
+using Application;
 using Application.Common.Interfaces.Queries;
 using Application.PurchaseHistories.Commands;
 using Application.PurchaseHistories.Exceptions;
 using CSharpFunctionalExtensions;
 using Domain.PurchaseHistories;
+using Domain.Sessions;
 using Domain.Tickets;
 using Domain.Users;
 using MediatR;
@@ -48,6 +50,16 @@ namespace Api.Controllers
         }
 
         [HttpGet("[action]")]
+        [TypeFilter(typeof(Authorized))]
+        public async Task<ActionResult<IEnumerable<PurchaseHistoryDto>>> GetByUser(CancellationToken cancellation)
+        {
+            var userId = (HttpContext.Items[Authorized.UserKey] as User)!.Id;
+            var histories = await query.GetMany(cancellation, x => x.UserId == userId);
+
+            return Ok(histories.Select(PurchaseHistoryDto.FromDomainModel));
+        }
+
+        [HttpGet("[action]")]
         public async Task<ActionResult<IEnumerable<PurchaseHistoryDto>>> GetByTicketId([FromQuery] Guid id, CancellationToken cancellation)
         {
             var ticketId = new TicketId(id);
@@ -56,14 +68,41 @@ namespace Api.Controllers
             return Ok(histories.Select(PurchaseHistoryDto.FromDomainModel));
         }
 
+        [HttpGet("[action]")]
+        public async Task<ActionResult<IEnumerable<PurchaseHistoryDto>>> GetBySessionId([FromQuery] Guid id, CancellationToken cancellation)
+        {
+            var sessionId = new SessionId(id);
+            var histories = await query.GetMany(cancellation, x => x.Ticket != null && x.Ticket.SessionId == sessionId, include: x => x.Include(x => x.Ticket)!);
+
+            return Ok(histories.Select(PurchaseHistoryDto.FromDomainModel));
+        }
+
         [HttpPost("[action]")]
-        [TypeFilter(typeof(Authorized))]
+        [TypeFilter(typeof(Authorized), Arguments = [Defaults.AdminRole])]
         public async Task<ActionResult<PurchaseHistoryDto>> Create([FromForm] CreatePurchaseHistoryDto dto, CancellationToken cancellation)
         {
             var input = new CreatePurchaseHistoryCommand
             {
                 UserId = dto.UserId,
                 TicketId = dto.TicketId
+            };
+
+            var result = await sender.Send(input, cancellation);
+
+            return result.Match(
+                history => Ok(PurchaseHistoryDto.FromDomainModel(history)),
+                e => e.ToObjectResult()
+            );
+        }
+
+        [HttpPost("[action]")]
+        [TypeFilter(typeof(Authorized))]
+        public async Task<ActionResult<PurchaseHistoryDto>> CreateByUser([FromForm] Guid ticketId, CancellationToken cancellation)
+        {
+            var input = new CreatePurchaseHistoryCommand
+            {
+                UserId = (HttpContext.Items[Authorized.UserKey] as User)!.Id.Value,
+                TicketId = ticketId
             };
 
             var result = await sender.Send(input, cancellation);

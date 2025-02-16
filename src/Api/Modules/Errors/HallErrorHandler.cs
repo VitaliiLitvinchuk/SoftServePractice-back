@@ -13,6 +13,7 @@ public static class HallErrorHandler
             HallNotFoundException => StatusCodes.Status404NotFound,
             HallNameAlreadyExistsException => StatusCodes.Status409Conflict,
             HallHasReleationsException => StatusCodes.Status409Conflict,
+            HallSeatsAlreadyExistsException => StatusCodes.Status409Conflict,
             _ => throw new NotImplementedException("Unhandled exception")
         }
     };
