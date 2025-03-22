@@ -27,6 +27,10 @@ public static class SwaggerAuth
                 },new List<string>()
             }
             });
+
+            // Todo only for controllers 
+            // var fileDoc = Path.Combine(AppContext.BaseDirectory, $"{assemblyName}.xml");
+            // c.IncludeXmlComments(fileDoc);
         });
 
         return services;

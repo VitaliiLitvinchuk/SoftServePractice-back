@@ -23,7 +23,7 @@ public static class ConfigureApplication
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Scoped, includeInternalTypes: true);
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
-        services.AddHangfire(configuration);
+        services.ConfigureHangfire(configuration);
     }
 
     private static void AddServices(this IServiceCollection services)
@@ -35,7 +35,7 @@ public static class ConfigureApplication
         services.AddScoped<IHangfireSessionService, HangfireSessionService>();
     }
 
-    private static void AddHangfire(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureHangfire(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHangfire(config =>
             config.UsePostgreSqlStorage(options =>
@@ -46,7 +46,7 @@ public static class ConfigureApplication
         services.AddHangfireServer();
     }
 
-    public static void UseHangfire(this WebApplication app)
+    public static void UseHangfireDashboardAndJobs(this WebApplication app)
     {
         app.UseHangfireDashboard();
         app.MapHangfireDashboard();
@@ -58,7 +58,7 @@ public static class ConfigureApplication
     }
 
     public static string UploadsDir { get; private set; } = "";
-    public static IApplicationBuilder UseAppStaticFiles(this IApplicationBuilder app)
+    public static IApplicationBuilder ConfigureStaticFiles(this IApplicationBuilder app)
     {
         UploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
 

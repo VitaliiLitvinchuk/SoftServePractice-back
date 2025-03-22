@@ -5,6 +5,7 @@ using Api.Modules.Validator;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Application;
 using Api.Modules.Auth;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,15 +32,23 @@ builder.Services.UseSwaggerGen();
 
 var app = builder.Build();
 
+app.UseSwagger(options =>
+{
+    options.RouteTemplate = "/openapi/{documentName}.json";
+});
+
+app.MapScalarApiReference("s", options =>
+{
+});
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseAppStaticFiles();
+app.ConfigureStaticFiles();
 
-app.UseHangfire();
+app.UseHangfireDashboardAndJobs();
 
 app
     .UseAuthentication()
